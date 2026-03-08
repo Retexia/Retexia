@@ -8,8 +8,8 @@ const Services = () => {
     return (
         <div className="flex flex-col w-full overflow-hidden">
             <Hero />
-            <IntakeForm />
             <CoreServices />
+            <IntakeForm />
             <Process />
             <FinalCTA />
         </div>
