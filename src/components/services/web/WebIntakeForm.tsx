@@ -1,9 +1,88 @@
 import { useState } from 'react';
+import { submitWebLead } from '../../../services/webhookApi';
+import { Loader2 } from 'lucide-react';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const WebIntakeForm = () => {
     const [step, setStep] = useState(1);
     const totalSteps = 3;
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [formData, setFormData] = useState({ full_name: '', email: '', phone: '', company_name: '', has_website: false, website_url: '', main_goal: '', needs_cms: true, is_ecommerce: false, needs_login: false, design_status: 'full', reference_websites: '', timeline: '', budget: '', vision: '' });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { id, name, value, type } = e.target; const checked = (e.target as HTMLInputElement).checked;
+        if (type === 'checkbox') {
+            const fieldName = name || id;
+            setFormData((prev: any) => {
+                const arr = (prev as any)[fieldName] || [];
+                if (checked) {
+                    return { ...prev, [fieldName]: [...arr, value] };
+                } else {
+                    return { ...prev, [fieldName]: arr.filter((item: any) => item !== value) };
+                }
+            });
+        } else {
+
+            const fieldName = type === 'radio' ? name : id;
+
+            let finalValue: any = value;
+
+            if (finalValue === 'true') finalValue = true;
+
+            if (finalValue === 'false') finalValue = false;
+
+            setFormData((prev: any) => ({ ...prev, [fieldName]: finalValue }));
+
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent | React.MouseEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            await submitWebLead(formData);
+            setIsSuccess(true);
+            window.scrollTo({ top: document.getElementById('web-intake-form')?.offsetTop ? document.getElementById('web-intake-form')!.offsetTop - 100 : 0, behavior: 'smooth' });
+        } catch (error) {
+            console.error('Error:', error);
+            alert('There was an issue submitting your request. Please try again later.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (isSuccess) {
+        return (
+            <section id="web-intake-form" className="relative pb-32 z-20 px-4 sm:px-6 lg:px-8 -mt-10">
+                <div className="max-w-3xl mx-auto">
+                    <div className="bg-[#111827] border border-white/10 rounded-[2.5rem] p-8 md:p-14 shadow-2xl relative overflow-hidden text-center">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+                        <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <CheckCircle2 size={40} className="text-green-500" />
+                        </div>
+                        <h2 className="text-3xl font-bold text-white mb-4">Success! We will be in touch.</h2>
+                        <p className="text-gray-400 mb-8 max-w-lg mx-auto">
+                            Thank you for submitting your request. Our team is reviewing your details and will get back to you within 24 hours.
+                        </p>
+                        <button
+                            onClick={() => {
+                                setIsSuccess(false);
+                                setStep(1);
+                                setFormData({ full_name: '', email: '', phone: '', company_name: '', has_website: false, website_url: '', main_goal: '', needs_cms: true, is_ecommerce: false, needs_login: false, design_status: 'full', reference_websites: '', timeline: '', budget: '', vision: '' });
+                                
+                            }}
+                            className="inline-flex items-center text-white bg-[#1f2937] border border-white/10 hover:bg-white/5 px-8 py-4 rounded-full transition-all font-semibold"
+                        >
+                            Submit Another Request
+                        </button>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
 
     const nextStep = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -44,23 +123,23 @@ const WebIntakeForm = () => {
                         <div className={`transition-all duration-500 ${step === 1 ? 'block opacity-100' : 'hidden opacity-0'}`}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
-                                    <input type="text" id="name" placeholder="John Doe" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
+                                    <label htmlFor="full_name" className="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
+                                    <input type="text" id="full_name" value={formData.full_name} onChange={handleChange} placeholder="John Doe" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
-                                    <input type="email" id="email" placeholder="john@company.com" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
+                                    <input type="email" id="email" value={formData.email} onChange={handleChange} placeholder="john@company.com" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div>
                                     <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number <span className="text-gray-500 font-normal">(Optional)</span></label>
-                                    <input type="tel" id="phone" placeholder="(555) 123-4567" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
+                                    <input type="tel" id="phone" value={formData.phone} onChange={handleChange} placeholder="(555) 123-4567" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
                                 </div>
                                 <div>
-                                    <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">Business or Brand Name</label>
-                                    <input type="text" id="company" placeholder="Acme Corp" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
+                                    <label htmlFor="company_name" className="block text-sm font-medium text-gray-300 mb-2">Business or Brand Name</label>
+                                    <input type="text" id="company_name" value={formData.company_name} onChange={handleChange} placeholder="Acme Corp" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
                                 </div>
                             </div>
 
@@ -68,13 +147,13 @@ const WebIntakeForm = () => {
                                 <label className="block text-sm font-medium text-gray-300 mb-3">Do you currently have a website?</label>
                                 <div className="flex gap-4">
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="has_website" value="yes" className="peer sr-only" />
+                                        <input type="radio" name="has_website" value="true" checked={formData.has_website === true} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             Yes
                                         </div>
                                     </label>
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="has_website" value="no" className="peer sr-only" defaultChecked />
+                                        <input type="radio" name="has_website" value="false" checked={formData.has_website === false} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             No
                                         </div>
@@ -83,14 +162,14 @@ const WebIntakeForm = () => {
                             </div>
 
                             <div className="mb-8">
-                                <label htmlFor="website_link" className="block text-sm font-medium text-gray-300 mb-1">If yes, drop the link here so we can take a look!</label>
-                                <input type="url" id="website_link" placeholder="https://www.yourwebsite.com" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
+                                <label htmlFor="website_url" className="block text-sm font-medium text-gray-300 mb-1">If yes, drop the link here so we can take a look!</label>
+                                <input type="url" id="website_url" value={formData.website_url} onChange={handleChange} placeholder="https://www.yourwebsite.com" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600" />
                             </div>
 
                             <div>
-                                <label htmlFor="goal" className="block text-sm font-medium text-gray-300 mb-1">What is the main reason you want a new website?</label>
+                                <label htmlFor="main_goal" className="block text-sm font-medium text-gray-300 mb-1">What is the main reason you want a new website?</label>
                                 <p className="text-xs text-gray-500 mb-3">Don't worry about the technical terms; just tell us your main goal.</p>
-                                <select id="goal" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" defaultValue="">
+                                <select id="main_goal" value={formData.main_goal} onChange={handleChange} className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" >
                                     <option value="" disabled>Select your primary goal...</option>
                                     <option value="ecommerce">I want to sell products directly to customers.</option>
                                     <option value="leads">I want people to contact me for my services (plumbing, consulting, etc.).</option>
@@ -108,13 +187,13 @@ const WebIntakeForm = () => {
                                 <p className="text-xs text-gray-500 mb-3">For example, will you need to add new blog posts, change photos, or update text on your own without calling a developer?</p>
                                 <div className="flex gap-4">
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="needs_cms" value="yes" className="peer sr-only" defaultChecked />
+                                        <input type="radio" name="needs_cms" value="true" checked={formData.needs_cms === true} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             Yes
                                         </div>
                                     </label>
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="needs_cms" value="no" className="peer sr-only" />
+                                        <input type="radio" name="needs_cms" value="false" checked={formData.needs_cms === false} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             No
                                         </div>
@@ -127,13 +206,13 @@ const WebIntakeForm = () => {
                                 <p className="text-xs text-gray-500 mb-3">Let us know if we need to build a shopping cart and a way to accept credit card payments.</p>
                                 <div className="flex gap-4">
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="is_ecommerce" value="yes" className="peer sr-only" />
+                                        <input type="radio" name="is_ecommerce" value="true" checked={formData.is_ecommerce === true} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             Yes
                                         </div>
                                     </label>
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="is_ecommerce" value="no" className="peer sr-only" defaultChecked />
+                                        <input type="radio" name="is_ecommerce" value="false" checked={formData.is_ecommerce === false} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             No
                                         </div>
@@ -146,13 +225,13 @@ const WebIntakeForm = () => {
                                 <p className="text-xs text-gray-500 mb-3">Choose 'Yes' if your users will need their own private accounts, dashboards, or profiles.</p>
                                 <div className="flex gap-4">
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="needs_auth" value="yes" className="peer sr-only" />
+                                        <input type="radio" name="needs_login" value="true" checked={formData.needs_login === true} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             Yes
                                         </div>
                                     </label>
                                     <label className="flex-1 cursor-pointer">
-                                        <input type="radio" name="needs_auth" value="no" className="peer sr-only" defaultChecked />
+                                        <input type="radio" name="needs_login" value="false" checked={formData.needs_login === false} onChange={handleChange} className="peer sr-only" />
                                         <div className="text-center bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5">
                                             No
                                         </div>
@@ -165,19 +244,19 @@ const WebIntakeForm = () => {
                                 <p className="text-xs text-gray-500 mb-3">This helps us know if we need to involve our design team!</p>
                                 <div className="space-y-3">
                                     <label className="block cursor-pointer">
-                                        <input type="radio" name="branding" value="full" className="peer sr-only" defaultChecked />
+                                        <input type="radio" name="design_status" value="full" checked={formData.design_status === 'full'} onChange={handleChange} className="peer sr-only" />
                                         <div className="bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5 text-left">
                                             Yes, I have a logo and a clear brand style.
                                         </div>
                                     </label>
                                     <label className="block cursor-pointer">
-                                        <input type="radio" name="branding" value="partial" className="peer sr-only" />
+                                        <input type="radio" name="design_status" value="partial" checked={formData.design_status === 'partial'} onChange={handleChange} className="peer sr-only" />
                                         <div className="bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5 text-left">
                                             I have a logo, but I need help designing the rest of the look.
                                         </div>
                                     </label>
                                     <label className="block cursor-pointer">
-                                        <input type="radio" name="branding" value="none" className="peer sr-only" />
+                                        <input type="radio" name="design_status" value="none" checked={formData.design_status === 'none'} onChange={handleChange} className="peer sr-only" />
                                         <div className="bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-gray-300 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-white transition-all hover:bg-white/5 text-left">
                                             No, I need you to design everything from scratch.
                                         </div>
@@ -186,9 +265,9 @@ const WebIntakeForm = () => {
                             </div>
 
                             <div>
-                                <label htmlFor="inspiration" className="block text-sm font-medium text-gray-300 mb-1">Are there any websites you really love?</label>
+                                <label htmlFor="reference_websites" className="block text-sm font-medium text-gray-300 mb-1">Are there any websites you really love?</label>
                                 <p className="text-xs text-gray-500 mb-3">Paste 1 or 2 links to websites you like the look of. This helps us understand your style!</p>
-                                <textarea id="inspiration" rows={3} placeholder="https://apple.com, https://stripe.com" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600 resize-none"></textarea>
+                                <textarea id="reference_websites" value={formData.reference_websites} onChange={handleChange} rows={3} placeholder="https://apple.com, https://stripe.com" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600 resize-none"></textarea>
                             </div>
 
                         </div>
@@ -199,7 +278,7 @@ const WebIntakeForm = () => {
                             <div className="mb-8">
                                 <label htmlFor="timeline" className="block text-sm font-medium text-gray-300 mb-1">When would you ideally like this website to go live?</label>
                                 <p className="text-xs text-gray-500 mb-3">We want to make sure we can fit your project into our schedule.</p>
-                                <select id="timeline" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" defaultValue="">
+                                <select id="timeline" value={formData.timeline} onChange={handleChange} className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" >
                                     <option value="" disabled>Select a timeline...</option>
                                     <option value="rush">As soon as possible (Rush project)</option>
                                     <option value="1-2_months">Within the next 1 to 2 months</option>
@@ -210,7 +289,7 @@ const WebIntakeForm = () => {
                             <div className="mb-8">
                                 <label htmlFor="budget" className="block text-sm font-medium text-gray-300 mb-1">What is your estimated budget for this project?</label>
                                 <p className="text-xs text-gray-500 mb-3">Websites are a lot like houses, the price depends on how many "rooms" and custom features you want. Knowing your budget helps us recommend the best solutions without overspending.</p>
-                                <select id="budget" className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" defaultValue="">
+                                <select id="budget" value={formData.budget} onChange={handleChange} className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" >
                                     <option value="" disabled>Select a budget range...</option>
                                     <option value="under_200">Under $200</option>
                                     <option value="200_400">$200 - $400</option>
@@ -222,7 +301,7 @@ const WebIntakeForm = () => {
                             <div>
                                 <label htmlFor="vision" className="block text-sm font-medium text-gray-300 mb-1">Tell us a little more about your vision! (Optional)</label>
                                 <p className="text-xs text-gray-500 mb-3">In your own words, describe what you want this website to do for your business. There are no wrong answers!</p>
-                                <textarea id="vision" rows={5} placeholder="I want to create a space that feels trustworthy and modern where users can quickly book consultations..." className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600 resize-none"></textarea>
+                                <textarea id="vision" value={formData.vision} onChange={handleChange} rows={5} placeholder="I want to create a space that feels trustworthy and modern where users can quickly book consultations..." className="w-full bg-[#1f2937] border border-white/10 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-600 resize-none"></textarea>
                             </div>
                         </div>
 
@@ -248,13 +327,9 @@ const WebIntakeForm = () => {
                                     Continue <ArrowRight size={18} className="ml-2" />
                                 </button>
                             ) : (
-                                <button
-                                    type="submit"
-                                    onClick={(e) => { e.preventDefault(); alert('Web Development Request Submitted!'); }}
-                                    className="flex items-center text-white bg-green-600 hover:bg-green-500 px-8 py-4 rounded-full shadow-[0_0_15px_rgba(22,163,74,0.4)] transition-all font-semibold ml-auto"
-                                >
-                                    Submit Request <CheckCircle2 size={18} className="ml-2" />
-                                </button>
+                                <button type="submit" onClick={handleSubmit} disabled={isSubmitting} className="flex items-center text-white bg-green-600 hover:bg-green-500 px-8 py-4 rounded-full shadow-[0_0_15px_rgba(22,163,74,0.4)] transition-all font-semibold ml-auto disabled:opacity-50 disabled:cursor-not-allowed">
+            {isSubmitting ? <><Loader2 size={18} className="animate-spin mr-2" /> Submitting...</> : <>{step < totalSteps ? 'Submit Request' : 'Submit Request'} <CheckCircle2 size={18} className="ml-2" /></>}
+        </button>
                             )}
                         </div>
 
