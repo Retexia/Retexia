@@ -5,51 +5,66 @@ const ProjectGrid = () => {
     const projects = [
         {
             id: 1,
-            title: 'E-commerce Redesign for Modern Brand',
-            category: 'Web App',
-            image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop',
+            title: 'Overmode (Clothing Store)',
+            category: 'E-commerce & Retail',
+            url: 'https://overmode.com',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.35.05.png',
             span: 'md:col-span-2 md:row-span-2', // Large featured project
             color: 'from-blue-500/40 to-indigo-500/40'
         },
         {
             id: 2,
-            title: 'HealthTrack iOS Application',
-            category: 'iOS App',
-            image: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=2070&auto=format&fit=crop',
+            title: 'Natural Beauty (Skincare)',
+            category: 'E-commerce & Retail',
+            url: 'https://naturalbeauty.com.au',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.38.34.png',
             span: 'md:col-span-1 md:row-span-1',
             color: 'from-green-500/40 to-emerald-500/40'
         },
         {
             id: 3,
-            title: 'Fintech Dashboard UI/UX',
-            category: 'UI/UX Design',
-            image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop',
+            title: 'Pearl Isle Capital (Financial Services)',
+            category: 'Corporate & Services',
+            url: 'https://pearlislecapital.com',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.40.03.png',
             span: 'md:col-span-1 md:row-span-1',
             color: 'from-purple-500/40 to-pink-500/40'
         },
         {
             id: 4,
-            title: 'Logistics Management Platform',
-            category: 'Web App',
-            image: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=2076&auto=format&fit=crop',
+            title: 'Green Funding (Renewable Energy)',
+            category: 'Corporate & Services',
+            url: 'https://greenfunding.com.au',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.40.42.png',
             span: 'md:col-span-2 md:row-span-1', // Wide project
             color: 'from-orange-500/40 to-red-500/40'
         },
         {
             id: 5,
-            title: 'Smart Home Automation App',
-            category: 'Mobile App',
-            image: 'https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=2070&auto=format&fit=crop',
+            title: 'Zeylan Island Holidays (Tourism Agency)',
+            category: 'Corporate & Services',
+            url: 'https://zeylanislandholidays.com',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.41.49.png',
             span: 'md:col-span-1 md:row-span-1',
             color: 'from-teal-500/40 to-cyan-500/40'
         },
         {
             id: 6,
-            title: 'SaaS Landing Page Conversion Optimization',
-            category: 'Web Development',
-            image: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=2074&auto=format&fit=crop',
+            title: 'AV Bids (Event Management System)',
+            category: 'Specialty & Platforms',
+            url: 'https://avbids.com',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.42.40.png',
             span: 'md:col-span-1 md:row-span-1',
             color: 'from-yellow-500/40 to-amber-500/40'
+        },
+        {
+            id: 7,
+            title: 'El Jannah (Food & Restaurant)',
+            category: 'Specialty & Platforms',
+            url: 'https://eljannah.com.au',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.43.33.png',
+            span: 'md:col-span-1 md:row-span-1',
+            color: 'from-pink-500/40 to-rose-500/40'
         }
     ];
 
@@ -63,15 +78,17 @@ const ProjectGrid = () => {
                             className={`group flex flex-col ${project.span}`}
                         >
                             {/* Image Container */}
-                            <Link
-                                to="/portfolio/sample-project"
+                            <a
+                                href={project.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="relative block w-full overflow-hidden rounded-3xl bg-[#111827] aspect-video sm:aspect-square md:aspect-auto md:h-full min-h-[300px]"
                             >
                                 {/* Image */}
                                 <img
                                     src={project.image}
                                     alt={project.title}
-                                    className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                                    className="absolute inset-0 w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
                                 />
 
                                 {/* Overlay details */}
@@ -81,10 +98,10 @@ const ProjectGrid = () => {
                                 {/* View Case Study Button (Revealed on hover) */}
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-8 group-hover:translate-y-0 ease-[cubic-bezier(0.25,1,0.5,1)]">
                                     <div className="flex items-center text-white font-semibold bg-white/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/30 hover:bg-white/30 transition-colors">
-                                        View Case Study <ArrowRight size={18} className="ml-2" />
+                                        View Website <ArrowRight size={18} className="ml-2" />
                                     </div>
                                 </div>
-                            </Link>
+                            </a>
 
                             {/* Text Information below the card */}
                             <div className="pt-6 pb-2">
@@ -93,11 +110,11 @@ const ProjectGrid = () => {
                                         {project.category}
                                     </span>
                                 </div>
-                                <Link to="/portfolio/sample-project" className="inline-block">
+                                <a href={project.url} target="_blank" rel="noopener noreferrer" className="inline-block">
                                     <h3 className="text-2xl font-bold text-white hover:text-primary transition-colors line-clamp-2">
                                         {project.title}
                                     </h3>
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     ))}

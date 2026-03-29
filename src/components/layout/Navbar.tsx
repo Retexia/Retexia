@@ -32,12 +32,7 @@ const Navbar = () => {
                                 {link.name}
                             </Link>
                         ))}
-                        <Link
-                            to="/login"
-                            className="text-sm font-medium text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-all"
-                        >
-                            Client Login
-                        </Link>
+
                         <Link
                             to="/services"
                             className="text-sm font-medium text-white bg-primary hover:bg-primary-hover px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(217,36,27,0.4)] hover:shadow-[0_0_25px_rgba(217,36,27,0.6)] transition-all"
@@ -73,13 +68,7 @@ const Navbar = () => {
                             </Link>
                         ))}
                         <div className="pt-4 flex flex-col gap-3 px-3">
-                            <Link
-                                to="/login"
-                                className="text-center text-sm font-medium text-white border border-white/20 hover:bg-white/10 px-4 py-2.5 rounded-full transition-all"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Client Login
-                            </Link>
+
                             <Link
                                 to="/services"
                                 className="text-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2.5 rounded-full shadow-[0_0_15px_rgba(217,36,27,0.4)] transition-all"

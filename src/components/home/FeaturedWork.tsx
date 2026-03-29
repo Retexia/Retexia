@@ -4,15 +4,17 @@ import { ArrowRight } from 'lucide-react';
 const FeaturedWork = () => {
     const projects = [
         {
-            title: 'FinTech Dashboard',
-            category: 'Web Application',
-            image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop',
+            title: 'Overmode (Clothing Store)',
+            category: 'E-commerce & Retail',
+            url: 'https://overmode.com',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.35.05.png',
             color: 'from-blue-500/20 to-purple-500/20'
         },
         {
-            title: 'HealthTrack App',
-            category: 'Mobile App',
-            image: 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?q=80&w=1981&auto=format&fit=crop',
+            title: 'Pearl Isle Capital (Financial Services)',
+            category: 'Corporate & Services',
+            url: 'https://pearlislecapital.com',
+            image: 'https://pwtogokzlyjzhyxaiufl.supabase.co/storage/v1/object/public/retexia/Screenshot%202026-03-29%20at%2007.40.03.png',
             color: 'from-green-500/20 to-emerald-500/20'
         }
     ];
@@ -42,7 +44,7 @@ const FeaturedWork = () => {
                                 <img
                                     src={project.image}
                                     alt={project.title}
-                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out opacity-80 group-hover:opacity-100"
+                                    className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700 ease-in-out opacity-80 group-hover:opacity-100"
                                 />
                             </div>
 
@@ -55,15 +57,17 @@ const FeaturedWork = () => {
                                     {project.category}
                                 </div>
                                 <h4 className="text-3xl font-bold text-white mb-4">{project.title}</h4>
-                                <Link
-                                    to="/portfolio"
+                                <a
+                                    href={project.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="inline-flex items-center text-white font-medium group/link hover:text-primary transition-colors"
                                 >
-                                    Read Case Study
+                                    View Website
                                     <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center ml-3 group-hover/link:bg-primary group-hover/link:text-white transition-all transform group-hover/link:translate-x-1">
                                         <ArrowRight size={14} />
                                     </span>
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     ))}
